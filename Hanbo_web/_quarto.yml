@@ -4,8 +4,8 @@ project:
 
 website:
   title: "Hanbo Dong"
-  site-url: https://dhb0425.github.io/biostat777-intro-Hanbo-Dong-/
-  repo-url:  https://github.com/dhb0425/biostat777-intro-Hanbo-Dong-/
+  site-url: https://dhb0425.github.io/biostat777-intro-Hanbo-Dong/
+  repo-url:  https://github.com/dhb0425/biostat777-intro-Hanbo-Dong
   navbar:
     left:
       - href: index.qmd
