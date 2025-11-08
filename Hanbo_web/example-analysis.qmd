@@ -1,0 +1,182 @@
+---
+title: "Example analysis: Meteorite Landings"
+subtitle: "Exploring patterns in meteorite discoveries worldwide"
+format: html
+toc: true
+bibliography: references.bib
+---
+
+::: callout-note
+## Research question
+**What are the spatial and temporal patterns of meteorite landings globally, and how do mass distributions vary by discovery type?**
+:::
+
+::: callout-tip
+## Intended audience
+Data science students and researchers interested in geospatial analysis and exploratory data visualization using tidyverse tools.
+:::
+
+### Data source
+
+We use the **NASA Meteorite Landings** dataset from NASA's Open Data Portal [@nasa2013]. This comprehensive dataset contains information about all known meteorite landings, including location coordinates, mass, year of discovery, and classification.
+
+**Original data:** <https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-11/meteorites.csv>
+
+::: {.aside}
+**Data dictionary**
+- `name`: Meteorite name
+- `mass`: Mass in grams
+- `fall`: Found or Fell
+- `year`: Year discovered
+- `lat`: Latitude
+- `long`: Longitude
+- `class`: Classification type
+:::
+
+![](https://storage.googleapis.com/kaggle-datasets-images/316/682/99345324a0f295878ffe97e361f594d0/dataset-cover.jpeg){fig-alt="Meteorite dataset cover" width="1200"}
+
+> Source: Kaggle Meteorite Landings Dataset
+
+### Setup
+
+```{r}
+library(tidyverse)
+library(knitr)
+
+
+meteorites <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-11/meteorites.csv")
+```
+
+### Data wrangling
+
+We perform multiple data cleaning and transformation steps using dplyr and tidyr functions [@wickham2023r]:
+
+```{r}
+meteorites_clean <- meteorites %>%
+  # Remove rows with missing critical variables
+  drop_na(mass, year, lat, long) %>%
+  # Rename columns for consistency
+  rename(reclat = lat, reclong = long) %>%
+  # Filter for reasonable years and valid coordinates
+  filter(year >= 1800, year <= 2023,
+         between(reclat, -90, 90),
+         between(reclong, -180, 180),
+         mass > 0) %>%
+  # Create new variables
+  mutate(
+    mass_kg = mass / 1000,
+    log_mass = log10(mass + 1),
+    century = cut(year,
+                  breaks = c(1800, 1850, 1900, 1950, 2000, 2025),
+                  labels = c("1800-1850", "1850-1900", "1900-1950",
+                            "1950-2000", "2000-2023")),
+    mass_category = case_when(
+      mass < 100 ~ "Small (<100g)",
+      mass < 1000 ~ "Medium (100-1000g)",
+      mass < 10000 ~ "Large (1-10kg)",
+      TRUE ~ "Very Large (>10kg)"
+    )
+  ) %>%
+  # Arrange by mass in descending order
+  arrange(desc(mass)) %>%
+  # Select relevant columns
+  select(name, fall, year, century, mass, mass_kg, log_mass,
+         mass_category, reclat, reclong, class)
+
+# Summary statistics by discovery type
+summary_stats <- meteorites_clean %>%
+  group_by(fall, century) %>%
+  summarise(
+    n = n(),
+    mean_mass = mean(mass_kg),
+    median_mass = median(mass_kg),
+    .groups = "drop"
+  ) %>%
+  arrange(century, desc(n))
+
+kable(head(summary_stats, 10),
+      caption = "Summary statistics by discovery type and century")
+```
+
+### Plot 1: Mass distribution by discovery type (violin plot with facets)
+
+```{r}
+#| fig-width: 10
+#| fig-height: 6
+ggplot(meteorites_clean, aes(x = fall, y = log_mass, fill = fall)) +
+  geom_violin(alpha = 0.7, draw_quantiles = c(0.25, 0.5, 0.75)) +
+  facet_wrap(~ century, nrow = 1) +
+  labs(
+    title = "Meteorite mass distribution by discovery type across centuries",
+    subtitle = "Log-transformed mass shows bimodal patterns in found vs. observed falls",
+    x = "Discovery Type",
+    y = "Log10(Mass in grams)",
+    caption = "Data source: NASA Meteorite Landings Database (2013)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### Plot 2: Discovery timeline (line plot)
+
+```{r}
+#| fig-width: 10
+#| fig-height: 5
+discoveries_by_year <- meteorites_clean %>%
+  group_by(year, fall) %>%
+  summarise(count = n(), .groups = "drop")
+
+ggplot(discoveries_by_year, aes(x = year, y = count, color = fall)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 1.5, alpha = 0.6) +
+  labs(
+    title = "Meteorite discoveries have increased dramatically since 1950",
+    subtitle = "Found meteorites dominate recent discoveries due to systematic searches",
+    x = "Year",
+    y = "Number of meteorites discovered",
+    color = "Discovery Type",
+    caption = "Data source: NASA Open Data Portal"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "top")
+```
+
+### Plot 3: Geographic distribution (scatter plot)
+
+```{r}
+#| fig-width: 10
+#| fig-height: 6
+ggplot(meteorites_clean %>% sample_n(min(5000, nrow(.))),
+       aes(x = reclong, y = reclat, color = mass_category, size = log_mass)) +
+  geom_point(alpha = 0.4) +
+  scale_size_continuous(range = c(0.5, 4)) +
+  labs(
+    title = "Global distribution of meteorite landings",
+    subtitle = "Antarctica shows high concentration due to systematic collection efforts",
+    x = "Longitude",
+    y = "Latitude",
+    color = "Mass Category",
+    size = "Log(Mass)",
+    caption = "Data source: NASA Meteorite Landings (sample of 5000 points)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+
+
+### Summary
+
+Using the NASA Meteorite Landings data, I compared masses by discovery type (“fell” vs. “found”) across time and geography. Discoveries surge after ~1950 and are dominated by found specimens, consistent with systematic search campaigns, while falls remain relatively flat. Violin plots of log-scaled mass show found meteorites have broader (often bimodal) distributions—many small fragments with occasional very large outliers—whereas falls are more tightly distributed. Since 1950, falls tend to have higher typical (median) masses than found pieces, whose averages are pulled down by the flood of small discoveries. The map highlights strong clustering in Antarctica and desert regions, reinforcing search and preservation biases. Overall, patterns in counts and mass are driven as much by ascertainment (where and how we look) as by the underlying flux of meteorites. These patterns also highlight the importance of understanding **collection biases** when interpreting meteorite data for scientific research [@mcsween2006meteorites].
+
+---
+
+### Functions used
+
+**dplyr**: `filter()`, `mutate()`, `arrange()`, `select()`, `group_by()`, `summarise()`, `rename()`
+**tidyr**: `drop_na()`
+**ggplot2**: `geom_violin()`, `geom_line()`, `geom_point()`, `facet_wrap()`
+
+---
+
+### References

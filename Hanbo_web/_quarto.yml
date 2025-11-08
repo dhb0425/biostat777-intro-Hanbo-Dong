@@ -1,0 +1,31 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Hanbo Dong"
+  site-url: https://dhb0425.github.io/biostat777-intro-Hanbo-Dong-/
+  repo-url:  https://github.com/dhb0425/biostat777-intro-Hanbo-Dong-/
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: about.qmd
+        text: About
+      - href: example-analysis.qmd
+        text: Example analysis
+  page-navigation: true
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-location: left
+    code-fold: false
+    css: styles.css
+
+bibliography: references.bib
+engine: knitr
+
+resources:
+  - .nojekyll

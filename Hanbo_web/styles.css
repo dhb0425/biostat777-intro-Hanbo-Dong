@@ -1,0 +1,7 @@
+/* Minimal typography tweaks */
+body { line-height: 1.55; }
+.sidebar nav a { font-weight: 500; }
+img { border-radius: 12px; }
+.figure { margin: 1.25rem 0; }
+.callout { border-radius: 12px; }
+.aside { font-size: 0.95rem; }

@@ -1,0 +1,16 @@
+---
+title: "Home"
+page-layout: article
+---
+
+# Hi, I'm Hanbo Dong 👋
+
+**Biostatistics PhD student at Johns Hopkins University.**
+I develop machine learning methods and non-parametric models for microbiome and virome data. When I'm not coding, you'll find me singing Jay Chou songs or watching football matches.
+
+![](images/hanbo.jpg){fig-alt="Hanbo Dong" width="300"}
+
+## Quick links
+- [About](about.qmd)
+- [Example analysis](example-analysis.qmd)
+- Email: <hdong18@jh.edu>  <!-- replace with your preferred contact -->
