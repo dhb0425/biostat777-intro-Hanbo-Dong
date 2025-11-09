@@ -21,9 +21,9 @@ I’m **Hanbo Dong**, a **Biostatistics PhD student at Johns Hopkins University*
 - **Dong, H.**, Li, R., Zhao, N., Dadhania, D. M., Suthanthiran, M., Lee, J. R., & Ling, W. (2024). *Antibiotic subclasses differentially perturb the gut microbiota in kidney transplant recipients.* **Frontiers in Transplantation**, 3:1400067.
 
 ### Manuscripts in preparation
-- **Dong, H.**, Liu, C., Fu, C., Minot, S., & Ling, W. (2024). *Leveraging AI protein structure prediction for functional annotation of the human virome.* In preparation for submission to **Nature Microbiology**.
-- **Dong, H.**, Li, M., Li, Y., Wu, M. C., & Ling, W. (2024). *Assessing α-diversity given differential read depth in virome studies via conditional quantile B-spline method.* In preparation for submission to **Nature Methods**.
-- Li, S.+; **Dong, H.** +; Fu, C.+; Zhao, N.; & Ling, W. (2024). *Integration and batch correction of microbiome studies with repeated measures via longitudinal conditional quantile regression.* In preparation for submission to **Nature Methods**. (+co-first authors)
+- **Dong, H.**, Liu, C., Fu, C., Minot, S., & Ling, W. (2025). *Leveraging AI protein structure prediction for functional annotation of the human virome.* In preparation for submission to **Nature Microbiology**.
+- **Dong, H.**, Li, M., Li, Y., Wu, M. C., & Ling, W. (2025). *Assessing α-diversity given differential read depth in virome studies via conditional quantile B-spline method.* In preparation for submission to **Nature Methods**.
+- Li, S.+; **Dong, H.** +; Fu, C.+; Zhao, N.; & Ling, W. (2025). *Integration and batch correction of microbiome studies with repeated measures via longitudinal conditional quantile regression.* In preparation for submission to **Nature Methods**. (+co-first authors)
 
 ---
 
